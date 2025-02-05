@@ -47,10 +47,10 @@ app.get("/secretWord", (req, res) => {
     req.session.secretWord = "mY.sEcReT-wOrD";
   }
 
+  res.locals.info = req.flash("info");
+  res.locals.errors = req.flash("error");
   res.render("secretWord", {
     secretWord: req.session.secretWord,
-    errors: req.flash("error"),
-    info: req.flash("info"),
   });
 });
 
