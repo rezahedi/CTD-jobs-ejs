@@ -10,13 +10,32 @@ const app = express();
 app.set("view engine", "ejs");
 app.use( bodyParser );
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+const MongoDBStore = require("connect-mongodb-session")(session);
+const url = process.env.MONGO_URI;
+
+const store = new MongoDBStore({
+  // may throw an error, which won't be caught
+  uri: url,
+  collection: "ctd-jobs-ejs-mySessions",
+});
+store.on("error", function (error) {
+  console.log(error);
+});
+
+const sessionParms = {
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  store: store,
+  cookie: { secure: false, sameSite: "strict" },
+};
+
+if (app.get("env") === "production") {
+  app.set("trust proxy", 1); // trust first proxy
+  sessionParms.cookie.secure = true; // serve secure cookies
+}
+
+app.use(session(sessionParms));
 
 // secret word handling
 app.get("/secretWord", (req, res) => {
