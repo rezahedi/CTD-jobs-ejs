@@ -5,6 +5,8 @@ const bodyParser = require("body-parser").urlencoded({ extended: true });
 require("dotenv").config(); // to load the .env file into the process.env object
 const session = require("express-session");
 
+const connectFlash = require("connect-flash");
+
 const app = express();
 
 app.set("view engine", "ejs");
@@ -37,17 +39,29 @@ if (app.get("env") === "production") {
 
 app.use(session(sessionParms));
 
+app.use( connectFlash() );
+
 // secret word handling
 app.get("/secretWord", (req, res) => {
   if ( !req.session.secretWord ) {
     req.session.secretWord = "mY.sEcReT-wOrD";
   }
 
-  res.render("secretWord", { secretWord: req.session.secretWord });
+  res.render("secretWord", {
+    secretWord: req.session.secretWord,
+    errors: req.flash("error"),
+    info: req.flash("info"),
+  });
 });
 
 app.post("/secretWord", (req, res) => {
-  req.session.secretWord = req.body.secretWord;
+  if (req.body.secretWord.toUpperCase()[0] == "P") {
+    req.flash("error", "That word won't work!");
+    req.flash("error", "You can't use words that start with p.");
+  } else {
+    req.session.secretWord = req.body.secretWord;
+    req.flash("info", "The secret word was changed.");
+  }
   res.redirect("/secretWord");
 });
 
