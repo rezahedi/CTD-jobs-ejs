@@ -1,5 +1,5 @@
 const express = require("express");
-// const passport = require("passport");
+const passport = require("passport");
 const router = express.Router();
 
 const {
@@ -14,14 +14,11 @@ router
   .route("/login")
   .get(loginShow)
   .post(
-    // passport.authenticate("local", {
-    //   successRedirect: "/",
-    //   failureRedirect: "/sessions/login",
-    //   failureFlash: true,
-    // })
-    (req, res) => {
-      res.send("Not yet implemented.");
-    }
+    passport.authenticate("local", {
+      successRedirect: "/",
+      failureRedirect: "/sessions/login",
+      failureFlash: true,
+    })
   );
 router.route("/logoff").post(logoff);
 

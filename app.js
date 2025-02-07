@@ -41,6 +41,13 @@ app.use(session(sessionParms));
 
 app.use( connectFlash() );
 
+const passport = require("passport");
+const passportInit = require("./passport/passportInit");
+
+passportInit();
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(require("./middlewares/storeLocals"));
 app.get("/", (req, res) => {
   res.render("index");
