@@ -3,18 +3,13 @@ const parseVErr = require("../utils/parseValidationErrs");
 const csrf = require('host-csrf')
 
 const registerShow = (req, res) => {
-  res.render("register", {
-    csrfToken: csrf.token(req, res)
-  });
+  res.render("register");
 };
 
 const registerDo = async (req, res, next) => {
   if (req.body.password != req.body.password1) {
     req.flash("error", "The passwords entered do not match.");
-    return res.render("register", {
-      errors: req.flash("errors"),
-      csrfToken: csrf.token(req, res)
-    });
+    return res.render("register", { errors: req.flash("errors") });
   }
   try {
     await User.create(req.body);
@@ -26,10 +21,7 @@ const registerDo = async (req, res, next) => {
     } else {
       return next(e);
     }
-    return res.render("register", { 
-      errors: req.flash("errors"),
-      csrfToken: csrf.token(req, res)
-    });
+    return res.render("register", { errors: req.flash("errors") });
   }
   res.redirect("/");
 };
@@ -37,7 +29,7 @@ const registerDo = async (req, res, next) => {
 const logoff = (req, res) => {
   // Destroy csrf cookie
   res.clearCookie('csrfToken')
-  
+
   req.session.destroy(function (err) {
     if (err) {
       console.log(err);
@@ -51,9 +43,7 @@ const loginShow = (req, res) => {
     return res.redirect("/");
   }
   
-  res.render("login", {
-    csrfToken: csrf.token(req, res)
-  });
+  res.render("login");
 };
 
 module.exports = {
