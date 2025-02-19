@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const csrf = require('host-csrf')
 
 router.get("/", (req, res) => {
   if (!req.session.secretWord) {
