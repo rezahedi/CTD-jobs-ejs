@@ -81,13 +81,14 @@ app.get("/", (req, res) => {
 });
 app.use("/sessions", require("./routes/sessionRoutes"));
 
-// Jobs
-app.use("/jobs", require('./routes/jobs'))
-
 // secret word handling
 const auth = require("./middlewares/auth");
 const secretWordRouter = require("./routes/secretWord");
 app.use("/secretWord", auth, secretWordRouter);
+
+// Jobs
+app.use('/public', express.static('./public'))
+app.use("/jobs", auth, require('./routes/jobs'))
 
 app.use((req, res) => {
   res.status(404).send(`That page (${req.url}) was not found.`);
