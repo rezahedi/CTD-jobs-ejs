@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
+const csrf = require('host-csrf')
 
 router.get("/", (req, res) => {
   if (!req.session.secretWord) {
     req.session.secretWord = "mY.sEcReT-wOrD";
   }
 
-  res.render("secretWord", { secretWord: req.session.secretWord });
+  res.render("secretWord", { secretWord: req.session.secretWord, csrfToken: csrf.token(req, res) });
 });
 
 router.post("/", (req, res) => {
