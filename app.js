@@ -81,6 +81,9 @@ app.get("/", (req, res) => {
 });
 app.use("/sessions", require("./routes/sessionRoutes"));
 
+// Jobs
+app.use("/jobs", require('./routes/jobs'))
+
 // secret word handling
 const auth = require("./middlewares/auth");
 const secretWordRouter = require("./routes/secretWord");
