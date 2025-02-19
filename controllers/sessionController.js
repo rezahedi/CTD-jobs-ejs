@@ -35,6 +35,9 @@ const registerDo = async (req, res, next) => {
 };
 
 const logoff = (req, res) => {
+  // Destroy csrf cookie
+  res.clearCookie('csrfToken')
+  
   req.session.destroy(function (err) {
     if (err) {
       console.log(err);
