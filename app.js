@@ -77,7 +77,9 @@ app.use( passport.initialize(), passport.session() );
 
 app.use(require("./middlewares/storeLocals"));
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", {
+    csrfToken: csrf.token(req, res)
+  });
 });
 app.use("/sessions", require("./routes/sessionRoutes"));
 
