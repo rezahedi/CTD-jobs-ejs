@@ -1,6 +1,8 @@
 <%- include("../partials/head.ejs") %>
 <%- include("../partials/header.ejs") %>
 
+<button class="editBtn" data-href="/jobs/new">Create New Expense</button>
+
 <table id="expenses-table">
   <tr id="expenses-table-header">
     <th>Title</th>
@@ -27,5 +29,5 @@
     </tr>
   <% }) %>
 </table>
-<script src="./public/list.js"></script>
+
 <%- include("../partials/footer.ejs") %>

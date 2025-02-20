@@ -1,1 +1,43 @@
-edit job form
+<%- include("../partials/head.ejs") %>
+<%- include("../partials/header.ejs") %>
+
+<h3>Edit Expense</h3>
+<form action="/jobs/update/<%= expense.id %>" method="post">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <input type="hidden" name="id" value="<%= expense.id %>" />
+  <div>
+    <label>
+      Title:
+      <input name="title" value="<%= expense.title %>" type="text" required />
+    </label>
+  </div>
+  <div>
+    <label>
+      Amount:
+      <input name="amount" value="<%= expense.amount %>" type="number" required />
+    </label>
+  </div>
+  <div>
+    <label>
+      Description:
+      <textarea name="description"><%= expense.description %></textarea>
+    </label>
+  </div>
+  <div>
+    <label>
+      Category:
+      <select name="category" required>
+        <option value="">Select a category</option>
+        <% categories.map(cat=>{ %>
+          <option value="<%= cat %>" <%= (cat==expense.category) ? ' selected' : '' %>>
+            <%= cat %>
+          </option>
+        <% }) %>
+      </select>
+    </label>
+  </div>
+  <button>Update</button>
+  <button data-href='/jobs/'>Cancel</button>
+</form>
+
+<%- include("../partials/footer.ejs") %>
