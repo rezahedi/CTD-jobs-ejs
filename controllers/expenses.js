@@ -5,7 +5,7 @@ const CATS = ['Groceries', 'Rent', 'Entertainment', 'Transportation', 'Health', 
 
 // TODO: Handling Errors
 
-const allJobs = async (req, res, next) => {
+const allExpenses = async (req, res, next) => {
   const expenses = await Expense
     .find({ userId: req.user.id })
     .populate('userId', 'name')
@@ -13,22 +13,22 @@ const allJobs = async (req, res, next) => {
   // TODO: Fetch limited data from mongodb and paginate
   // TODO: Make table sortable (Search feature)
 
-  return res.render('jobs/list', { expenses })
+  return res.render('expenses/list', { expenses })
 }
 
-const showAddJobForm = async (req, res, next) => {
+const showAddExpenseForm = async (req, res, next) => {
   const categories = CATS
-  return res.render('jobs/jobForm', {
+  return res.render('expenses/expenseForm', {
     expense: null,
     categories,
     page: {
       title: 'Create New Expense',
-      formAction: `/jobs`
+      formAction: `/expenses`
     }
   })
 }
 
-const addJob = async (req, res, next) => {
+const addExpense = async (req, res, next) => {
   const { title, amount, description, category } = req.body
 
   const userId = req.user.id
@@ -44,10 +44,10 @@ const addJob = async (req, res, next) => {
     }
   )
 
-  res.redirect('/jobs')
+  res.redirect('/expenses')
 }
 
-const showEditJobForm = async (req, res, next) => {
+const showEditExpenseForm = async (req, res, next) => {
   const userId = req.user.id
   const expenseId = req.params.id
 
@@ -59,17 +59,17 @@ const showEditJobForm = async (req, res, next) => {
   // TODO: Create categories schema model
   const categories = CATS
 
-  return res.render('jobs/jobForm', {
+  return res.render('expenses/expenseForm', {
     expense,
     categories,
     page: {
       title: 'Edit Expense',
-      formAction: `/jobs/update/${expenseId}`
+      formAction: `/expenses/update/${expenseId}`
     }
   })
 }
 
-const updateJob = async (req, res, next) => {
+const updateExpense = async (req, res, next) => {
   //TODO: Update job in db
   const userId = req.user.id;
   const {
@@ -93,10 +93,10 @@ const updateJob = async (req, res, next) => {
     }
   )
 
-  res.redirect('/jobs')
+  res.redirect('/expenses')
 }
 
-const deleteJob = async (req, res, next) => {
+const deleteExpense = async (req, res, next) => {
   //TODO: Delete job from db
   const userId = req.user.userId
   const expenseId = req.params.id
@@ -108,14 +108,14 @@ const deleteJob = async (req, res, next) => {
     }
   )
 
-  res.redirect('/jobs')
+  res.redirect('/expenses')
 }
 
 module.exports = {
-  allJobs,
-  addJob,
-  showAddJobForm,
-  showEditJobForm,
-  updateJob,
-  deleteJob,
+  allExpenses,
+  addExpense,
+  showAddExpenseForm,
+  showEditExpenseForm,
+  updateExpense,
+  deleteExpense,
 }
