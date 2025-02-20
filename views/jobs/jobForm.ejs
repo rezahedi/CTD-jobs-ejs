@@ -1,25 +1,26 @@
 <%- include("../partials/head.ejs") %>
 <%- include("../partials/header.ejs") %>
 
-<h3>Create New Expense</h3>
-<form action="/jobs" method="post">
+<h3><%= page.title %></h3>
+<form action="<%= page.formAction %>" method="post">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <input type="hidden" name="id" value="<%= (expense ? expense.id : '') %>" />
   <div>
     <label>
       Title:
-      <input name="title" type="text" required />
+      <input name="title" value="<%= (expense ? expense.title : '') %>" type="text" required />
     </label>
   </div>
   <div>
     <label>
       Amount:
-      <input name="amount" type="number" required />
+      <input name="amount" value="<%= (expense ? expense.amount : '') %>" type="number" required />
     </label>
   </div>
   <div>
     <label>
       Description:
-      <textarea name="description"></textarea>
+      <textarea name="description"><%= (expense ? expense.description : '') %></textarea>
     </label>
   </div>
   <div>
@@ -28,14 +29,14 @@
       <select name="category" required>
         <option value="">Select a category</option>
         <% categories.map(cat=>{ %>
-          <option value="<%= cat %>">
+          <option value="<%= cat %>" <%= (expense && cat==expense.category) ? ' selected' : '' %>>
             <%= cat %>
           </option>
         <% }) %>
       </select>
     </label>
   </div>
-  <button>Create</button>
+  <button><%= (expense ? 'Update' : 'Create') %></button>
   <button data-href='/jobs/'>Cancel</button>
 </form>
 

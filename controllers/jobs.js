@@ -18,7 +18,14 @@ const allJobs = async (req, res, next) => {
 
 const showAddJobForm = async (req, res, next) => {
   const categories = CATS
-  return res.render('jobs/newJobForm', { categories })
+  return res.render('jobs/jobForm', {
+    expense: null,
+    categories,
+    page: {
+      title: 'Create New Expense',
+      formAction: `/jobs`
+    }
+  })
 }
 
 const addJob = async (req, res, next) => {
@@ -52,7 +59,14 @@ const showEditJobForm = async (req, res, next) => {
   // TODO: Create categories schema model
   const categories = CATS
 
-  return res.render('jobs/editJobForm', { expense, categories })
+  return res.render('jobs/jobForm', {
+    expense,
+    categories,
+    page: {
+      title: 'Edit Expense',
+      formAction: `/jobs/update/${expenseId}`
+    }
+  })
 }
 
 const updateJob = async (req, res, next) => {
