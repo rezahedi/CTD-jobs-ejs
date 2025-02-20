@@ -6,3 +6,12 @@ buttons.forEach(element=>{
     location.href = e.target.getAttribute('data-href')
   })
 })
+
+const deletes = document.querySelectorAll('form.deleteForm');
+deletes.forEach(formElement=>{
+  formElement.addEventListener('submit', (e) => {
+    e.preventDefault()
+    if (confirm('Do you really want to delete this?'))
+      e.target.submit()
+  })
+})

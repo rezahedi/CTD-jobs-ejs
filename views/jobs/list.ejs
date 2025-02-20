@@ -21,7 +21,7 @@
       <td><%= new Date(item.updatedAt).toDateString() %></td>
       <td class="actionButtons">
         <button data-href="/jobs/edit/<%= item.id %>">Edit</button>
-        <form action="/jobs/delete/<%= item.id %>" method="post">
+        <form action="/jobs/delete/<%= item.id %>" method="post" class="deleteForm">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <button>Delete</button>
         </form>
