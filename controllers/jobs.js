@@ -1,6 +1,9 @@
 const Expense = require('../models/Expense')
 
+// TODO: Create categories schema model
 const CATS = ['Groceries', 'Rent', 'Entertainment', 'Transportation', 'Health', 'Utilities', 'Bills', 'Subscriptions', 'Other']
+
+// TODO: Handling Errors
 
 const allJobs = async (req, res, next) => {
   const expenses = await Expense
@@ -14,7 +17,6 @@ const allJobs = async (req, res, next) => {
 }
 
 const showAddJobForm = async (req, res, next) => {
-  // TODO: Create categories schema model
   const categories = CATS
   return res.render('jobs/newJobForm', { categories })
 }
@@ -82,6 +84,17 @@ const updateJob = async (req, res, next) => {
 
 const deleteJob = async (req, res, next) => {
   //TODO: Delete job from db
+  const userId = req.user.userId
+  const expenseId = req.params.id
+
+  const expense = await Expense.findByIdAndDelete(
+    {
+      _id: expenseId,
+      userId
+    }
+  )
+
+  res.redirect('/jobs')
 }
 
 module.exports = {
