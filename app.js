@@ -29,6 +29,8 @@ app.use(
   xss(),
 );
 
+app.use('/public', express.static('./public'))
+
 const MongoDBStore = require("connect-mongodb-session")(session);
 const url = process.env.MONGO_URI;
 
@@ -58,7 +60,7 @@ if (app.get("env") === "production") {
 
 const csrfOptions = {
   protected_operations: ["POST"],
-  protected_content_type: ["application/json"],
+  protected_content_type: ["application/json", "application/x-www-form-urlencoded"],
   development_mode: csrfDevelopmentMode,
 }
 // Initialize and return middleware
@@ -87,17 +89,19 @@ const secretWordRouter = require("./routes/secretWord");
 app.use("/secretWord", auth, secretWordRouter);
 
 // Jobs
-app.use('/public', express.static('./public'))
 app.use("/expenses", auth, require('./routes/expenses'))
 
 app.use((req, res) => {
   res.status(404).send(`That page (${req.url}) was not found.`);
 });
 
-app.use((err, req, res, next) => {
-  res.status(500).send(err.message);
-  console.log(err);
-});
+const errorHandlerMiddleware = require("./middlewares/errorHandlerMiddleware");
+app.use(errorHandlerMiddleware);
+
+// app.use((err, req, res, next) => {
+//   res.status(500).send(err.message);
+//   console.log(err);
+// });
 
 const port = process.env.PORT || 3000;
 

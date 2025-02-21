@@ -3,6 +3,8 @@ const buttons = document.querySelectorAll('button[data-href]');
 buttons.forEach(element=>{
   element.addEventListener('click', (e) => {
     e.preventDefault()
+    if( e.target.getAttribute('data-href')=='goback' ) return goBack()
+    
     location.href = e.target.getAttribute('data-href')
   })
 })
@@ -15,3 +17,5 @@ deletes.forEach(formElement=>{
       e.target.submit()
   })
 })
+
+const goBack = ()=>history.back()

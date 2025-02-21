@@ -1,17 +1,12 @@
 const Expense = require('../models/Expense')
 
-// TODO: Create categories schema model
 const CATS = ['Groceries', 'Rent', 'Entertainment', 'Transportation', 'Health', 'Utilities', 'Bills', 'Subscriptions', 'Other']
-
-// TODO: Handling Errors
 
 const allExpenses = async (req, res, next) => {
   const expenses = await Expense
     .find({ userId: req.user.id })
     .populate('userId', 'name')
     .sort('createdAt')
-  // TODO: Fetch limited data from mongodb and paginate
-  // TODO: Make table sortable (Search feature)
 
   return res.render('expenses/list', { expenses })
 }
@@ -33,7 +28,6 @@ const addExpense = async (req, res, next) => {
 
   const userId = req.user.id
 
-  //TODO: Insert job into db
   const expense = await Expense.create(
     {
       title,
@@ -43,6 +37,10 @@ const addExpense = async (req, res, next) => {
       userId
     }
   )
+
+  if( !expense ) {
+    throw new Error('Error creating expense')
+  }
 
   res.redirect('/expenses')
 }
@@ -56,7 +54,10 @@ const showEditExpenseForm = async (req, res, next) => {
     _id: expenseId
   }).populate('userId', 'name')
 
-  // TODO: Create categories schema model
+  if ( !expense ) {
+    throw new Error(`No expense with id ${expenseId}`)
+  }
+
   const categories = CATS
 
   return res.render('expenses/expenseForm', {
@@ -70,7 +71,6 @@ const showEditExpenseForm = async (req, res, next) => {
 }
 
 const updateExpense = async (req, res, next) => {
-  //TODO: Update job in db
   const userId = req.user.id;
   const {
     body: { id: expenseId, title, amount, description, category },
@@ -93,11 +93,14 @@ const updateExpense = async (req, res, next) => {
     }
   )
 
+  if ( !expense ) {
+    throw new Error(`No expense with id ${expenseId}`)
+  }
+
   res.redirect('/expenses')
 }
 
 const deleteExpense = async (req, res, next) => {
-  //TODO: Delete job from db
   const userId = req.user.userId
   const expenseId = req.params.id
 
@@ -107,6 +110,10 @@ const deleteExpense = async (req, res, next) => {
       userId
     }
   )
+
+  if ( !expense ) {
+    throw new Error(`No expense with id ${expenseId}`)
+  }
 
   res.redirect('/expenses')
 }
