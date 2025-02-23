@@ -1,0 +1,33 @@
+<%- include("../partials/head.ejs") %>
+<%- include("../partials/header.ejs") %>
+
+<button data-href="/expenses/new">Create New Expense</button>
+
+<table id="expenses-table">
+  <tr id="expenses-table-header">
+    <th>Title</th>
+    <th>Amount</th>
+    <th>Category</th>
+    <th>Created At</th>
+    <th>Modified At</th>
+    <th colspan="2">Actions</th>
+  </tr>
+  <% expenses.map(item => { %>
+    <tr>
+      <td><%= item.title %></td>
+      <td><%= item.amount %></td>
+      <td><%= item.category %></td>
+      <td><%= new Date(item.createdAt).toDateString() %></td>
+      <td><%= new Date(item.updatedAt).toDateString() %></td>
+      <td class="actionButtons">
+        <button data-href="/expenses/edit/<%= item.id %>">Edit</button>
+        <form action="/expenses/delete/<%= item.id %>" method="post" class="deleteForm">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button>Delete</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+</table>
+
+<%- include("../partials/footer.ejs") %>

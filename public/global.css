@@ -1,0 +1,32 @@
+table{
+  width:100%;
+  margin:1rem 0;
+}
+tr td:first-child{
+  width: 100%;
+  text-wrap: balance;
+}
+th, td{
+  background-color: rgb(163, 206, 241);
+}
+th, td{
+  padding:.5rem 1rem;
+  text-wrap:nowrap;
+}
+.actionButtons{
+  display: flex;
+  gap:.5rem;
+}
+button{
+  border:1px solid gray;
+  border-radius:.3rem;
+  cursor: pointer;
+  padding: .3rem .8rem;
+  transition: scale ease-in-out 100ms;
+}
+button:hover{
+  border-color:black;
+}
+button:active{
+  scale:96%;
+}

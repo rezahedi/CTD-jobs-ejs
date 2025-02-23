@@ -1,7 +1,8 @@
 <%- include("partials/head.ejs") %>
 <%- include("partials/header.ejs") %>
 <% if (user) { %>
-    <a href="/secretWord">Click this link to view/change the secret word.</a>
+    <a href="/secretWord"><button>Secret Word</button></a>
+    <a href="/expenses"><button>Expenses App</button></a>
 <% } else { %>
     <a href="/sessions/login">Click this link to login.</a>
     <a href="/sessions/register">Click this link to register.</a>

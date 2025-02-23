@@ -1,6 +1,13 @@
 const express = require("express");
 require("express-async-errors");
 const bodyParser = require("body-parser").urlencoded({ extended: true });
+const cookieParser = require('cookie-parser')
+
+const helmet = require('helmet')
+const rateLimiter = require('express-rate-limit');
+const xss = require('./middlewares/xss')
+const hpp = require('hpp')
+const csrf = require('host-csrf')
 
 require("dotenv").config(); // to load the .env file into the process.env object
 const session = require("express-session");
@@ -10,7 +17,19 @@ const connectFlash = require("connect-flash");
 const app = express();
 
 app.set("view engine", "ejs");
-app.use( bodyParser );
+app.use(
+  rateLimiter({
+    windowMs: 60 * 1000, // 1 min
+    max: 60, // max requests per IP and per amount of time above, that is 60 request max per a minute
+  }),
+  cookieParser(process.env.SESSION_SECRET),
+  bodyParser,
+  helmet(),
+  hpp(),
+  xss(),
+);
+
+app.use('/public', express.static('./public'))
 
 const MongoDBStore = require("connect-mongodb-session")(session);
 const url = process.env.MONGO_URI;
@@ -24,7 +43,7 @@ store.on("error", function (error) {
   console.log(error);
 });
 
-const sessionParms = {
+const sessionParams = {
   secret: process.env.SESSION_SECRET,
   resave: true,
   saveUninitialized: true,
@@ -32,12 +51,23 @@ const sessionParms = {
   cookie: { secure: false, sameSite: "strict" },
 };
 
+let csrfDevelopmentMode = true
 if (app.get("env") === "production") {
+  csrfDevelopmentMode = false;
   app.set("trust proxy", 1); // trust first proxy
-  sessionParms.cookie.secure = true; // serve secure cookies
+  sessionParams.cookie.secure = true; // serve secure cookies
 }
 
-app.use(session(sessionParms));
+const csrfOptions = {
+  protected_operations: ["POST"],
+  protected_content_type: ["application/json", "application/x-www-form-urlencoded"],
+  development_mode: csrfDevelopmentMode,
+}
+// Initialize and return middleware
+const csrfMiddleware = csrf(csrfOptions);
+app.use(csrfMiddleware)
+
+app.use(session(sessionParams));
 
 app.use( connectFlash() );
 
@@ -45,8 +75,7 @@ const passport = require("passport");
 const passportInit = require("./passport/passportInit");
 
 passportInit();
-app.use(passport.initialize());
-app.use(passport.session());
+app.use( passport.initialize(), passport.session() );
 
 app.use(require("./middlewares/storeLocals"));
 app.get("/", (req, res) => {
@@ -59,14 +88,20 @@ const auth = require("./middlewares/auth");
 const secretWordRouter = require("./routes/secretWord");
 app.use("/secretWord", auth, secretWordRouter);
 
+// Jobs
+app.use("/expenses", auth, require('./routes/expenses'))
+
 app.use((req, res) => {
   res.status(404).send(`That page (${req.url}) was not found.`);
 });
 
-app.use((err, req, res, next) => {
-  res.status(500).send(err.message);
-  console.log(err);
-});
+const errorHandlerMiddleware = require("./middlewares/errorHandlerMiddleware");
+app.use(errorHandlerMiddleware);
+
+// app.use((err, req, res, next) => {
+//   res.status(500).send(err.message);
+//   console.log(err);
+// });
 
 const port = process.env.PORT || 3000;
 

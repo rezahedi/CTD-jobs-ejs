@@ -1,0 +1,43 @@
+<%- include("../partials/head.ejs") %>
+<%- include("../partials/header.ejs") %>
+
+<h3><%= page.title %></h3>
+<form action="<%= page.formAction %>" method="post">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <input type="hidden" name="id" value="<%= (expense ? expense.id : '') %>" />
+  <div>
+    <label>
+      Title:
+      <input name="title" value="<%= (expense ? expense.title : '') %>" type="text" required />
+    </label>
+  </div>
+  <div>
+    <label>
+      Amount:
+      <input name="amount" value="<%= (expense ? expense.amount : '') %>" type="number" required />
+    </label>
+  </div>
+  <div>
+    <label>
+      Description:
+      <textarea name="description"><%= (expense ? expense.description : '') %></textarea>
+    </label>
+  </div>
+  <div>
+    <label>
+      Category:
+      <select name="category" required>
+        <option value="">Select a category</option>
+        <% categories.map(cat=>{ %>
+          <option value="<%= cat %>" <%= (expense && cat==expense.category) ? ' selected' : '' %>>
+            <%= cat %>
+          </option>
+        <% }) %>
+      </select>
+    </label>
+  </div>
+  <button><%= (expense ? 'Update' : 'Create') %></button>
+  <button data-href='/expenses/'>Cancel</button>
+</form>
+
+<%- include("../partials/footer.ejs") %>
